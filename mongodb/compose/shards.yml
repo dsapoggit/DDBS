@@ -14,7 +14,7 @@ services:
   shard1s2:
     container_name: shard1s2
     image: mongo
-    command: mongod --shardsvr --replSet shard1rs --port 27017 --dbpath /data/db/dbms1
+    command: mongod --shardsvr --replSet shard3rs --port 27017 --dbpath /data/db/dbms1
     ports:
       - 20002:27017
     volumes:
@@ -23,7 +23,7 @@ services:
   shard2s1:
     container_name: shard2s1
     image: mongo
-    command: mongod --shardsvr --replSet shard1rs --port 27017 --dbpath /data/db/dbms2
+    command: mongod --shardsvr --replSet shard3rs --port 27017 --dbpath /data/db/dbms2
     ports:
       - 20003:27017
     volumes:
@@ -32,7 +32,7 @@ services:
   shard2s2:
     container_name: shard2s2
     image: mongo
-    command: mongod --shardsvr --replSet shard1rs --port 27017 --dbpath /data/db/dbms2
+    command: mongod --shardsvr --replSet shard2rs --port 27017 --dbpath /data/db/dbms2
     ports:
       - 20004:27017
     volumes:

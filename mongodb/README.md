@@ -11,24 +11,16 @@ To check the correctness run the following:
 docker-compose -f mongodb/compose/servers.yml ps
 ````
 
-Use the Mongo client application to log into each one of the config server replicas:
+Use the Mongo client application to log into one of the config server replicas for ports 10001, 10002:
 ````
-mongo mongodb://localhost:[port]
+mongosh localhost:[port]
+mongosh 192.168.124.7:10001
 ````
 
 Initiate the replicas in MongoDB (but instead of 192.168.124.7 use your local id):
 
 ````
-rs.initiate(
-  {
-    _id: "cfgrs",
-    configsvr: true,
-    members: [
-      { _id : 0, host : "192.168.124.7:10001" },
-      { _id : 1, host : "192.168.124.7:10002" }
-    ]
-  }
-)
+rs.initiate({_id: "cfgrs",configsvr: true,members: [{ _id : 0, host : "192.168.124.7:10001" },{ _id : 1, host : "192.168.124.7:10002" }]})
 ````
 If the operation is successful, the "ok" value in the output is 1
 
@@ -48,30 +40,38 @@ To check the correctness run the following:
 docker-compose -f mongodb/compose/shards.yml ps
 ````
 
-Use the Mongo client application to log into each one of the config server replicas:
+Use the Mongo client application to log each into one of not shared the config server replicas (20001 and 20004):
 ````
-mongo mongodb://localhost:[port]
+mongosh localhost:[port]
+mongosh 192.168.124.7:20001
+mongosh 192.168.124.7:20004
 ````
 
 Initiate the replicas in MongoDB (but instead of 192.168.124.7 use your local id):
 
 ````
-rs.initiate(
-  {
-    _id: "shard1rs",
-    members: [
-      { _id : 0, host : "192.168.124.7:20001" },
-      { _id : 1, host : "192.168.124.7:20002" }
-    ]
-  }
-)
+rs.initiate({_id: "shard1rs", members: [{ _id : 0, host : "192.168.124.7:20001" }]})
 ````
-If the operation is successful, the "ok" value in the output is 1
 
-You can use the following method to check the status of your instances:
+and
 ````
-rs.status() 
+rs.initiate({_id: "shard2rs", members: [{ _id : 1, host : "192.168.124.7:20004" }]})
 ````
+
+Do the same with the shared shard
+
+````
+mongosh localhost:[port]
+mongosh 192.168.124.7:20002
+````
+
+
+Initiate the replicas in MongoDB (but instead of 192.168.124.7 use your local id):
+
+````
+rs.initiate({_id: "shard3rs", members: [{ _id : 0, host : "192.168.124.7:20002" }, { _id : 1, host : "192.168.124.7:20003" }]})
+````
+
 
 ## To Setup a Mongos Instance
 
@@ -87,18 +87,21 @@ docker-compose -f mongodb/compose/instance.yml ps
 
 Use the Mongo client application to connect to the sharded cluster:
 ````
-mongo mongodb://localhost:[mongos-port]
+mongosh mongodb://localhost:[mongos-port]
+mongosh 192.168.124.7:30000
 ````
+
 
 Use the sh.addshard() method and connect the shard replicas to the cluster:
 
 ````
-sh.addShard("shard1/192.168.124.7:20001,192.168.124.7:20004")
+sh.addShard("shard1rs/192.168.124.7:20001")
+sh.addShard("shard2rs/192.168.124.7:20004")
 ````
 
 Add the shared shard
 ````
-sh.addShard( "shard1/192.168.124.7:20002,192.168.124.7:20003")
+sh.addShard( "shard3rs/192.168.124.7:20002,192.168.124.7:20003")
 ````
 
 Check the status with the sh.status() method:
