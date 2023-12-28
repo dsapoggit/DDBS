@@ -119,15 +119,92 @@ sh.enableSharding("ddbs")
 
 ## Setup Collection Sharding
 
-TODO
+### Fragmentation based on the region attribute
 
-It's about 
 ````
 region= ”Beijing”  allocated in DBMS1,       
 region= “HongKong” allocated in DBMS2.
 ````
- 
-and stuff
+
+For Beijing users run this
+
+````
+sh.shardCollection("ddbs.region_b", { [field]: 1 } )
+sh.addTagRange( 
+  "ddbs.region_b",
+  { "uid" : MinKey },
+  { "uid" : MaxKey },
+  "shard0"
+)
+````
+
+For Hong Kong users run this
+
+````
+sh.shardCollection("ddbs.region_h", { [field]: 1 } )
+sh.addTagRange( 
+  "ddbs.region_h",
+  { "uid" : MinKey },
+  { "uid" : MaxKey },
+  "shard2"
+)
+````
+
+
+### Fragmentation based on the category attribute
+
+````
+category=”science”     allocated in DBMS1 and DBMS2,     
+category=“technology”  allocated in DBMS2
+````
+
+For scientific articles run this
+
+````
+sh.shardCollection("ddbs.category_s", { [field]: 1 } )
+sh.addTagRange( 
+  "ddbs.category_s",
+  { "uid" : MinKey },
+  { "uid" : MaxKey },
+  "shard3"
+)
+````
+
+For technology articles run this
+
+````
+sh.shardCollection("ddbs.category_t", { [field]: 1 } )
+sh.addTagRange( 
+  "ddbs.category_t",
+  { "uid" : MinKey },
+  { "uid" : MaxKey },
+  "shard2"
+)
+````
+
+
+### Fragmentation based on the User table without replica
+
+TODO 
+
+Don't understand
+
+
+### Fragmentation based on the Article table with duplication
+
+````
+category=”science”     allocated in DBMS1 and DBMS2,     
+category=“technology”  allocated in DBMS2
+````
+
+
+### Fragmentation based on the temporal granularity
+
+````
+temporalGranularity=“daily”              allocated to DBMS1,       
+temporalGranularity=“weekly”or “monthly” allocated to DBMS2.
+
+````
 
 ## Delete everything
 
