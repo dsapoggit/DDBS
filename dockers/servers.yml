@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  configs1:
+    container_name: configs1
+    image: mongo
+    command: mongod --configsvr --replSet cfgrs --port 27017 --dbpath /data/db/dbms1
+    ports:
+      - 10001:27017
+    volumes:
+      - configs1:/data/db/dbms1
+
+  configs2:
+    container_name: configs2
+    image: mongo
+    command: mongod --configsvr --replSet cfgrs --port 27017 --dbpath /data/db/dbms2
+    ports:
+      - 10002:27017
+    volumes:
+      - configs2:/data/db/dbms2
+
+volumes:
+  configs1: {}
+  configs2: {}
