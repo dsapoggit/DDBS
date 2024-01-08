@@ -8,9 +8,6 @@ from time import time
 import tkinter as tk
 from scripts.utils import cache_init, cache_find
 
-import os
-
-
 font_sizes = (14, 18, 24, 60, 10)
 font_name = "comic sans ms"
 FONTS = [[font_name, size] for size in font_sizes]
