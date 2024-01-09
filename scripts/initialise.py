@@ -18,7 +18,7 @@ def info_over_data(data):
         else:
             out_dict[i['aid']].append(i['uid'])
     res_cnt = dict(map(lambda x: (x[0], str(len(x[1]))), out_dict.items()))
-    res_set = dict(map(lambda x: (x[0], list(set(x[1]))), out_dict.items()))  # todo sus maybe we dont need set maybe this should be before the line above
+    res_set = dict(map(lambda x: (x[0], list(set(x[1]))), out_dict.items()))  
     return res_cnt, res_set
 
 if __name__ == '__main__':
@@ -161,7 +161,7 @@ if __name__ == '__main__':
         exit(0)
 
     print('Popularity Rank initialization')
-    with open(root_dir + read_path, 'r') as f:  # todo piridelad yeto
+    with open(root_dir + read_path, 'r') as f:  
         ranks = {'daily': {}, 'weekly': {}, 'monthly': {}}
         for line in f.readlines():
             item = json.loads(line)
@@ -192,7 +192,7 @@ if __name__ == '__main__':
                     'temporalGranularity': dmw,
                     'articleAidList': ranks[dmw][tm]
                 }
-                if dmw == 'daily': # todo very todo yeta xyinniya gavarid piryiaamo - adchyisli nas
+                if dmw == 'daily':
                     article_dict['timestamp'] = str(pd.to_datetime(tm, format='%d-%m-%Y').value // 1e6)
                 elif dmw == 'weekly':
                     article_dict['timestamp'] = str(pd.to_datetime('0-' + tm, format='%w-%W-%Y').value // 1e6)
