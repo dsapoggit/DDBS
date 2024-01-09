@@ -453,9 +453,11 @@ python -m application.app_stylish
 To finish working run
 
 ```
+docker-compose -f dockers/caching.yml down -v
+
 docker-compose -f mongodb/compose/servers.yml down -v
 docker-compose -f mongodb/compose/shards.yml down -v
 docker-compose -f mongodb/compose/instance.yml down -v
 ```
-
+And don't forget to press the kill button in the application
 
