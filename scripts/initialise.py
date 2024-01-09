@@ -39,10 +39,8 @@ if __name__ == '__main__':
             group_dict[doc['region']].append(InsertOne(doc))
             if cnt == group_size:
                 if group_dict['Beijing']:
-                    # print('Beijing:\n',group_dict['Beijing'])
                     db().region_b.bulk_write(group_dict['Beijing'], ordered=True)
                 if group_dict['Hong Kong']:
-                    # print('Hong Kong:\n',group_dict['Hong Kong'])
                     db().region_h.bulk_write(group_dict['Hong Kong'], ordered=True)
                 cnt = 0
                 group_dict['Beijing'], group_dict['Hong Kong'] = [], []
@@ -84,7 +82,6 @@ if __name__ == '__main__':
                 query, field = {'uid': {'$in': uids}}, {'uid': 1, 'region': 1}
                 regions = list(db().region_b.find(query, field)) + list(db().region_h.find(query, field))
                 regions = dict(map(lambda x: (x['uid'], x['region']), regions))
-                # print(regions)
                 regions = list(map(lambda x: regions[x], uids))
                 bj_i = np.argwhere(np.array(regions) == 'Beijing').flatten()  # todo do we need all the flattens?
                 hk_i = np.argwhere(np.array(regions) == 'Hong Kong').flatten()
