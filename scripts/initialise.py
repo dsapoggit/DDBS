@@ -22,7 +22,7 @@ def info_over_data(data):
     return res_cnt, res_set
 
 if __name__ == '__main__':
-    root_dir = './db-generation/'  # todo maybe change
+    root_dir = './db-generation/'
     user_path = 'user.dat'
     article_path = 'article.dat'
     read_path = 'read.dat'
@@ -31,7 +31,7 @@ if __name__ == '__main__':
         group_size = GROUP_SIZE
     group_size_read = 50000
     print('User initialization')
-    with open(root_dir + user_path, 'r') as user_file:  # todo add functions for prettiness  // user caching sep based on region 
+    with open(root_dir + user_path, 'r') as user_file:  # user caching sep based on region 
         cnt, group_dict = 0, {'Beijing': [], 'Hong Kong': []}
         for line in user_file.readlines():
             cnt += 1
@@ -51,7 +51,7 @@ if __name__ == '__main__':
                 db().region_h.bulk_write(group_dict['Hong Kong'], ordered=True)
     
     print('Article initialization')
-    with open(root_dir + article_path, 'r') as article_file:  # todo same
+    with open(root_dir + article_path, 'r') as article_file:  # same
         cnt, group_dict = 0, {'science': [], 'technology': []}
         for line in article_file.readlines():
             cnt += 1
@@ -83,7 +83,7 @@ if __name__ == '__main__':
                 regions = list(db().region_b.find(query, field)) + list(db().region_h.find(query, field))
                 regions = dict(map(lambda x: (x['uid'], x['region']), regions))
                 regions = list(map(lambda x: regions[x], uids))
-                bj_i = np.argwhere(np.array(regions) == 'Beijing').flatten()  # todo do we need all the flattens?
+                bj_i = np.argwhere(np.array(regions) == 'Beijing').flatten()  
                 hk_i = np.argwhere(np.array(regions) == 'Hong Kong').flatten()
                 db().read_b.bulk_write(list(np.array(group_list)[bj_i]), ordered=True)
                 db().read_h.bulk_write(list(np.array(group_list)[hk_i]), ordered=True)

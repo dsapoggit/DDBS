@@ -97,7 +97,7 @@ class Article(tk.Tk):  # based on the digitalocean.com/community/tutorials/tkint
 
     def get_data(self, id, tklist, attributes, id_name, fields, results, entity, sort=True):
         tklist.delete(0, tk.END) 
-        query = {id_name: {'$in': id.split()}}  # todo maybe theres mistake here regarding beread/read 
+        query = {id_name: {'$in': id.split()}} 
         found = cache_find(query, {}, id, id_name, entity, attributes)
         results['text'] = f'Found {len(found)} {entity}s.'
         if sort:
