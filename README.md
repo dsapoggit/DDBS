@@ -340,12 +340,20 @@ sh.status()
 ####  Enable Sharding for the Database
 
 For this project, we use $use demo$ ddbs
+
 ````
-sh.addShardTag("shard1rs", "DBMS1")
-sh.addShardTag("shard2rs", "DBMS2")
-sh.addShardTag("shard3rs", "DBMS12")
 use ddbs
 sh.enableSharding("ddbs") 
+````
+
+#### Associates a shard with an  identifier. 
+
+Set an identifier to direct chunks that fall within a tagged range to specific shards.
+
+````
+sh.addShardTag("shard1rs", "shard1")
+sh.addShardTag("shard2rs", "shard2")
+sh.addShardTag("shard3rs", "shard3")
 ````
 
 ### Setup Collection Sharding
@@ -355,12 +363,11 @@ For each fragment run collection initialisation
 ````
 sh.shardCollection("ddbs.[name]", { 'uid': 1 } )
 sh.addTagRange( 
-  "ddbs.region_b",
+  "ddbs.[name]",
   { "uid" : MinKey },
   { "uid" : MaxKey },
   "[Server]"
 )
-
 
 sh.addTagRange( "ddbs.[name]",{ "uid" : MinKey },{ "uid" : MaxKey },"[Server]")
 ````
@@ -378,6 +385,8 @@ Where pairs of collections and servers are as given
 * popular_d - shard1
 * popular_w - shard2
 * popular_m - shard3
+
+After setting up the collections, exit Mongosh
 
 ### Transfer data
 
