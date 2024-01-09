@@ -13,7 +13,7 @@ To successfully run this project, those libraries and containers have to be prei
  
 * Docker
 * Redis
-* MangoDB
+* MongoDB
 * MongoDB Compass
 * Hadoop
 * Java JDK 
@@ -339,7 +339,7 @@ sh.status()
 
 ####  Enable Sharding for the Database
 
-For this project, we use $use demo$ ddbs
+For this project, we use ddbs database
 
 ````
 use ddbs
@@ -372,7 +372,7 @@ sh.addTagRange(
 sh.addTagRange( "ddbs.[name]",{ "uid" : MinKey },{ "uid" : MaxKey },"[Server]")
 ````
 
-Where pairs of collections and servers are as given
+Where pairs of [name]:[Server] are as given:
 
 * region_b - shard1
 * region_h - shard2
@@ -452,7 +452,7 @@ python -m application.app_stylish
 
 To finish working run
 
-````
+```
 docker-compose -f mongodb/compose/servers.yml down -v
 docker-compose -f mongodb/compose/shards.yml down -v
 docker-compose -f mongodb/compose/instance.yml down -v
