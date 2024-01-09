@@ -162,7 +162,6 @@ if __name__ == '__main__':
         ranks = {'daily': {}, 'weekly': {}, 'monthly': {}}
         for line in f.readlines():
             item = json.loads(line)
-            aid = item['aid']
             t = pd.to_datetime(int(item['timestamp']), unit='ms')
             all_ts_formats = {
                 'daily': f'{t.day}/{t.month}/{t.year}',
@@ -173,9 +172,9 @@ if __name__ == '__main__':
                 ts_format = all_ts_formats[dmw]
                 if ts_format not in ranks[dmw]:
                     ranks[dmw][ts_format] = {}
-                if aid not in ranks[dmw][ts_format]:
-                    ranks[dmw][ts_format][aid] = 0
-                ranks[dmw][ts_format][aid] += 1
+                if item['aid'] not in ranks[dmw][ts_format]:
+                    ranks[dmw][ts_format][item['aid']] = 0
+                ranks[dmw][ts_format][item['aid']] += 1
 
         cnt = 0
         insert_dict = {'daily': [], 'weekly': [], 'monthly': []}
