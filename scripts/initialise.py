@@ -165,21 +165,22 @@ if __name__ == '__main__':
             aid = item['aid']
             t = pd.to_datetime(int(item['timestamp']), unit='ms')
             all_ts_formats = {
-                'daily': f'{t.day}-{t.month}-{t.year}',
-                'weekly': f'{t.week}-{t.year}',
-                'monthly': f'{t.month}-{t.year}'
+                'daily': f'{t.day}/{t.month}/{t.year}',
+                'weekly': f'{t.week}/{t.year}',
+                'monthly': f'{t.month}/{t.year}'
             }
             for dmw in ranks.keys():
                 ts_format = all_ts_formats[dmw]
-                if not ts_format in ranks[dmw]:
+                if ts_format not in ranks[dmw]:
                     ranks[dmw][ts_format] = {}
-                if not aid in ranks[dmw][ts_format]:
-                    ranks[dmw][ts_format][aid] = 1
-                else:
-                    ranks[dmw][ts_format][aid] += 1
+                if aid not in ranks[dmw][ts_format]:
+                    ranks[dmw][ts_format][aid] = 0
+                ranks[dmw][ts_format][aid] += 1
 
         cnt = 0
         insert_dict = {'daily': [], 'weekly': [], 'monthly': []}
+        formats_dict = {'daily': '%d/%m/%Y', 'weekly': "%w/%W/%Y", "monthly": "%m/%Y"}
+        prefix_dict = {'daily': '', 'weekly': "0/", "monthly": ""}
         for dmw in ranks.keys():
             for tm in ranks[dmw]:
                 ranks[dmw][tm] = sorted(ranks[dmw][tm].items(), key=lambda x: x[1], reverse=True)
@@ -187,14 +188,9 @@ if __name__ == '__main__':
                 article_dict = {
                     'id': f'pr{cnt}',
                     'temporalGranularity': dmw,
-                    'articleAidList': ranks[dmw][tm]
+                    'articleAidList': ranks[dmw][tm],
+                    'timestamp': str(pd.to_datetime(prefix_dict[dmw] + tm, format=formats_dict[dmw]).value // 1e6)
                 }
-                if dmw == 'daily':
-                    article_dict['timestamp'] = str(pd.to_datetime(tm, format='%d-%m-%Y').value // 1e6)
-                elif dmw == 'weekly':
-                    article_dict['timestamp'] = str(pd.to_datetime('0-' + tm, format='%w-%W-%Y').value // 1e6)
-                elif dmw == 'monthly':
-                    article_dict['timestamp'] = str(pd.to_datetime(tm, format='%m-%Y').value // 1e6)
                 insert_dict[dmw].append(InsertOne(article_dict))
                 cnt += 1
 
