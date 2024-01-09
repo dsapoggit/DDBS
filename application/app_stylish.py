@@ -94,7 +94,7 @@ class Article(tk.Tk):  # based on the digitalocean.com/community/tutorials/tkint
         self.db().region_h.bulk_write([DeleteOne(user_dict)])
 
     def get_data(self, id, tklist, attributes, id_name, fields, results, entity, sort=True):
-        tklist.delete(0, tk.END)  # todo beread has sus entity or id_name
+        tklist.delete(0, tk.END) 
         query = {id_name: {'$in': id.split()}}  # todo maybe theres mistake here regarding beread/read 
         found = cache_find(query, {}, id, id_name, entity, attributes)
         results['text'] = f'Found {len(found)} {entity}s.'
@@ -143,6 +143,7 @@ class Article(tk.Tk):  # based on the digitalocean.com/community/tutorials/tkint
 
     def get_daily_rank(self, text, max_num, tklist, results):
         day = str(pd.to_datetime(text, format='%d/%m/%Y').value // 1e6)
+        # print(self.db().popular_d)
         self.get_rank(day, 'daily', self.db().popular_d, max_num, tklist, results)
 
     def get_weekly_rank(self, text, max_num, tklist, results):
