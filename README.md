@@ -350,191 +350,34 @@ sh.enableSharding("ddbs")
 
 ### Setup Collection Sharding
 
-#### Fragmentation based on the region attribute
+For each fragment run collection initialisation
 
 ````
-region= ”Beijing”  allocated in DBMS1,       
-region= “HongKong” allocated in DBMS2.
-````
-
-For Beijing users run this
-
-````
-sh.shardCollection("ddbs.region_b", { 'uid': 1 } )
+sh.shardCollection("ddbs.[name]", { 'uid': 1 } )
 sh.addTagRange( 
   "ddbs.region_b",
   { "uid" : MinKey },
   { "uid" : MaxKey },
-  "shard1rs"
+  "[Server]"
 )
 
 
-sh.addTagRange( "ddbs.region_b",{ "uid" : MinKey },{ "uid" : MaxKey },"DBMS1")
+sh.addTagRange( "ddbs.[name]",{ "uid" : MinKey },{ "uid" : MaxKey },"[Server]")
 ````
 
+Where pairs of collections and servers are as given
 
-
-For Hong Kong users run this
-
-````
-sh.shardCollection("ddbs.region_h", { "uid": 1 } )
-sh.addTagRange( 
-  "ddbs.region_h",
-  { "uid" : MinKey },
-  { "uid" : MaxKey },
-  "shard2"
-)
-````
-
-sh.addTagRange( "ddbs.region_h",{ "uid" : MinKey },{ "uid" : MaxKey },"DBMS2")
-
-
-#### Fragmentation based on the category attribute
-
-````
-category=”science”     allocated in DBMS1 and DBMS2,     
-category=“technology”  allocated in DBMS2
-````
-
-For scientific articles run this
-
-````
-sh.shardCollection("ddbs.category_s", { "aid": 1 } )
-sh.addTagRange( 
-  "ddbs.category_s",
-  { "aid" : MinKey },
-  { "aid" : MaxKey },
-  "shard3"
-)
-````
-
-sh.addTagRange( "ddbs.category_s",{ "aid" : MinKey },{ "aid" : MaxKey },"DBMS12")
-
-For technology articles run this
-
-````
-sh.shardCollection("ddbs.category_t", { "aid": 1 } )
-sh.addTagRange( 
-  "ddbs.category_t",
-  { "aid" : MinKey },
-  { "aid" : MaxKey },
-  "shard2"
-)
-````
-sh.addTagRange( "ddbs.category_t",{ "aid" : MinKey },{ "aid" : MaxKey },"DBMS2")
-
-
-#### Fragmentation based on the User table without replica
-
-For reads from Beijing run 
-````
-sh.shardCollection("ddbs.read_b", {"id": 1})
-sh.addTagRange( 
-  "ddbs.read_b",
-  { "id" : MinKey },
-  { "id" : MaxKey },
-  "shard1"
-)
-````
-
-sh.addTagRange( "ddbs.read_b",{ "id" : MinKey },{ "id" : MaxKey },"DBMS1")
-
-
-And for reads from Hong Kong run 
-````
-sh.shardCollection("ddbs.read_h", {"id": 1})
-sh.addTagRange( 
-  "ddbs.read_h",
-  { "id" : MinKey },
-  { "id" : MaxKey },
-  "shard2"
-)
-````
-
-sh.addTagRange( "ddbs.read_h",{ "id" : MinKey },{ "id" : MaxKey },"DBMS2")
-
-#### Fragmentation based on the Article table with duplication
-
-````
-category=”science”     allocated in DBMS1 and DBMS2,     
-category=“technology”  allocated in DBMS2
-````
-
-
-For scientific articles run this
-
-````
-sh.shardCollection("ddbs.read_cat_s", { "brid": 1 } )
-sh.addTagRange( 
-  "ddbs.read_cat_s",
-  { "brid" : MinKey },
-  { "brid" : MaxKey },
-  "shard3"
-)
-````
-sh.addTagRange( "ddbs.read_cat_s",{ "brid" : MinKey },{ "brid" : MaxKey },"DBMS12")
-
-
-
-For technology articles run this
-
-````
-sh.shardCollection("ddbs.read_cat_t", { "brid": 1 } )
-sh.addTagRange( 
-  "ddbs.read_cat_t",
-  { "brid" : MinKey },
-  { "brid" : MaxKey },
-  "shard2"
-)
-````
-
-sh.addTagRange( "ddbs.read_cat_t",{ "brid" : MinKey },{ "brid" : MaxKey },"DBMS2")
-
-
-#### Fragmentation based on the temporal granularity
-
-````
-temporalGranularity=“daily”              allocated to DBMS1,       
-temporalGranularity=“weekly”or “monthly” allocated to DBMS2.
-
-````
-
-````
-sh.shardCollection("ddbs.popular_d", {"prid": 1})
-sh.addTagRange(
-  "ddbs.popular_d",
-  { "prid" : MinKey },
-  { "prid" : MaxKey },
-  "shard1"
-)
-````
-
-sh.addTagRange("ddbs.popular_d",{ "prid" : MinKey },{ "prid" : MaxKey },"DBMS1")
-
-````
-sh.shardCollection("ddbs.popular_w", {"prid": 1})
-sh.addTagRange(
-  "ddbs.popular_w",
-  { "prid" : MinKey },
-  { "prid" : MaxKey },
-  "shard2"
-)
-
-sh.addTagRange("ddbs.popular_w",{ "prid" : MinKey },{ "prid" : MaxKey },"DBMS2")
-
-
-sh.shardCollection("ddbs.popular_m", {"prid": 1})
-sh.addTagRange(
-  "ddbs.popular_m",
-  { "prid" : MinKey },
-  { "prid" : MaxKey },
-  "shard2"
-)
-
-sh.addTagRange("ddbs.popular_m",{ "prid" : MinKey },{ "prid" : MaxKey },"DBMS2")
-
-
-````
+* region_b - shard1
+* region_h - shard2
+* category_s - shard3
+* category_t - shard2
+* read_b - shard1
+* read_h - shard2
+* read_cat_s - shard3
+* read_cat_t - shard2
+* popular_d - shard1
+* popular_w - shard2
+* popular_m - shard3
 
 ### Transfer data
 
@@ -585,10 +428,8 @@ CONFIG SET maxmemory-policy allkeys-lfu
 ````
 
 
-## "App instructions"
 
-
-### Run the application
+## Run the application
 
 To run the application run the following line
 
