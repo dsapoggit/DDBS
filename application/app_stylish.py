@@ -4,9 +4,11 @@ from PIL import Image, ImageTk
 import pyhdfs
 from pymongo import InsertOne, MongoClient, UpdateOne, DeleteOne
 import shutil
+import subprocess
 from time import time
 import tkinter as tk
 from scripts.utils import cache_init, cache_find
+import scripts.drop_all
 
 font_sizes = (14, 18, 24, 60, 10)
 font_name = "comic sans ms"
@@ -153,6 +155,20 @@ class Article(tk.Tk):  # based on the digitalocean.com/community/tutorials/tkint
         month = str(pd.to_datetime(text, format='%m/%Y').value // 1e6)
         self.get_rank(month, 'monthly', self.db().popular_m, max_num, tklist, results)
 
+    def kill_all(self):
+        exec(open('./scripts/drop_all.py').read()) #drop collectionsC:\Users\dsapo\2023\ddbs
+        temp = ''.join(subprocess.getoutput(["docker", "container", "ls", "-q"])).split('\n')
+        for container in temp:
+            subprocess.run(["docker", "stop", str(container)])
+
+        processes = ''.join(subprocess.getoutput(["docker", "ps", "-a", "-q"])).split('\n')
+        for cps in processes:
+            subprocess.run(["docker", "rm", "-f", str(cps)])
+
+        volumes = ''.join(subprocess.getoutput(["docker", "volume", "ls", "-q"]) ).split('\n')
+        for vol in volumes:
+            subprocess.run(["docker", "volume", "rm", str(vol)])
+
     def open_article(self, articles):  
         article = articles.curselection()
         if article:
@@ -228,9 +244,12 @@ class MainPage(tk.Frame):
         tk.Label(self, text="Popularity ranks", 
                  font=FONTS[0], fg='black', padx=20).grid(row=5, column=4, sticky='w')
         
+        # tk.Button(self, text="KILL",
+                    # command=lambda: controller.show_frame(MonthlyRankPage), font=FONTS[2], fg='white', background='red').grid(row=6, column=4, sticky='e')
         tk.Button(self, text="KILL",
-                    command=lambda: controller.show_frame(MonthlyRankPage), font=FONTS[2], fg='white', background='red').grid(row=6, column=4, sticky='e')
-        
+                    command=lambda: app.kill_all(), font=FONTS[2], fg='white', background='red').grid(row=6, column=4, sticky='e')
+
+
 
 class UserPage(tk.Frame):
     def __init__(self, parent, app):
