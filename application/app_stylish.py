@@ -143,7 +143,6 @@ class Article(tk.Tk):  # based on the digitalocean.com/community/tutorials/tkint
 
     def get_daily_rank(self, text, max_num, tklist, results):
         day = str(pd.to_datetime(text, format='%d/%m/%Y').value // 1e6)
-        # print(self.db().popular_d)
         self.get_rank(day, 'daily', self.db().popular_d, max_num, tklist, results)
 
     def get_weekly_rank(self, text, max_num, tklist, results):
